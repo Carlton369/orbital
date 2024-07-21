@@ -1,3 +1,10 @@
+import {Navbar} from '../../app/navbar'
+
 export default function Page() {
-    return <h1>Hello, Dashboard Page!</h1>
-  }
+    return (
+        <div className = 'wrapper'>
+        <Navbar />
+        <h1> dashboard </h1>
+      </div>
+    )
+}
