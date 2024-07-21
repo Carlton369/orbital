@@ -4,22 +4,33 @@
 }
 
 .navbar {
-    width: 100%;
-    height: auto;
-    border-bottom: 1px solid #e4e4e4;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: space-between; /* Distribute space between items */
+    align-items: center; /* Vertically center items */
+    padding: 0 20px; /* Adjust padding as needed */
+    border-bottom: 1px solid #e4e4e4;
+}
+
+.navbar .left {
+    display: flex;
+    align-items: center; /* Vertically center image */
+}
+
+.navbar .leftHome {
+    display: flex;
+    align-items: center; /* Vertically center the link */
+    margin-left: 20px; /* Adjust space between image and link */
 }
 
 .navbar .right {
     display: flex;
-    flex-direction: row;
+    align-items: center; /* Vertically center the login link */
 }
 
-.navbar .loginlink {
+.navbar .returnHome, .navbar .loginlink {
     font-size: 20px;
     color: #000;
     font-weight: 600;
-    margin: auto 10px;
+    text-decoration: none; /* Remove underline from links */
+    margin: 0; /* Remove any default margin */
 }
