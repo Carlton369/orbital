@@ -9,6 +9,7 @@
     align-items: center; /* Vertically center items */
     padding: 0 20px; /* Adjust padding as needed */
     border-bottom: 1px solid #e4e4e4;
+    background-color: #ffa500
 }
 
 .navbar .left {
