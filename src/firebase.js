@@ -1,6 +1,6 @@
  // Import the functions you need from the SDKs you need
  import { initializeApp } from 'firebase/app';
- import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, User } from 'firebase/auth';
+ import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, User,  signInWithEmailAndPassword } from 'firebase/auth';
  import { getFirestore, getDocs, collection, onSnapshot, query, where, orderBy} from 'firebase/firestore';
  import {getStorage} from 'firebase/storage'
  
@@ -25,4 +25,4 @@ const provider = new GoogleAuthProvider();
  // Export firestore database
  // It will be imported into your react app whenever it is needed
 
-export { auth, db, storage, provider, signInWithPopup, signOut, onAuthStateChanged, collection, onSnapshot ,getDocs, query,orderBy, where ,User};
+export { auth, db, storage, provider, signInWithPopup, signOut, onAuthStateChanged, collection, onSnapshot ,getDocs, query,orderBy, where ,User,  signInWithEmailAndPassword};

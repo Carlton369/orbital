@@ -2,7 +2,7 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { collection, addDoc } from 'firebase/firestore';
 import { db } from '../../firebase'; // Adjust the path as necessary
-import {Navbar} from '../../app/navbar';
+import {Navbar} from '../navbar';
 
 interface Game {
   name: string;

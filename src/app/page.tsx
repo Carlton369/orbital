@@ -7,7 +7,7 @@ export default function Page() {
   return (
     <div className = 'wrapper'>
       <Navbar />
-      <Link href="/dashboard">Dashboard</Link>
+ 
       <CataloguePage />
     </div>
   )

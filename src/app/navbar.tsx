@@ -28,14 +28,7 @@ export const Navbar = () => {
     }
   };
 
-  const handleSignOut = async () => {
-    try {
-      await signOut(auth);
-      setUser(null);
-    } catch (error) {
-      console.error("Error signing out:", error);
-    }
-  };
+ 
 
   return (
     <div className='navbar'>
