@@ -41,8 +41,10 @@ export default function LoginLayout({
           {user.photoURL && <img src={user.photoURL} alt={user.displayName} style={{ width: '50px', borderRadius: '50%' }} />}
           <p>Email: {user.email}</p>
 
-          <Link href = '../'>
+
+          <h2> Games on loan </h2>
           
+          <Link href = '../'>
           <button onClick={handleSignOut}>Sign Out</button>
           </Link>
         </div>

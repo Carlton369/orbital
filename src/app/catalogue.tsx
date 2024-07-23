@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react';
 import { db, collection, getDocs, orderBy,query } from '../firebase';
+import Link from 'next/link'
 
 interface CatalogueItem {
   id: string;
@@ -49,11 +50,7 @@ function CataloguePage() {
         {catalogue.map(item => (
           <ul>
           <li key={item.id}>{item.Name}</li>
-          <li key={item.id}>{item.Genre}</li>
-          <li key={item.id}>{item.Complexity}</li>
-          <li key={item.id}>{item.Duration}</li>
-          <li key={item.id}>{item.Players}</li>
-          <li key={item.id}>{item.Mechanics}</li>
+          <Link href={`/${item.id}`}> test </Link>
           <br/>
           </ul>
         ))}
