@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import {Navbar} from '../navbar'
 import ImageDisplay from '../../components/display_image';
 import emailjs from '@emailjs/browser'
+import '../../css/page.css'
 
 interface CatalogueItem {
   id: string;
@@ -14,7 +15,7 @@ interface CatalogueItem {
   mechanics: string;
   duration: string;
   players: string;
-  geek_url: string;
+  geeklink: string;
   isAvailable: boolean;
   img_path: string;
 }
@@ -23,7 +24,9 @@ const CatalogueItemDetail = () => {
   const { id } = useParams();
   const [item, setItem] = useState<CatalogueItem | null>(null);
   const [loading, setLoading] = useState(true);
-    
+  
+
+  // to fetch item from db
   useEffect(() => {
     const fetchItem = async (itemId: string) => {
       const docRef = doc(db, 'catalogue', itemId);
@@ -43,6 +46,7 @@ const CatalogueItemDetail = () => {
 
   }, [id]);
 
+  // to fetch user state
   useEffect(() => {
     // Set up an observer on the Auth object to listen for changes
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -62,7 +66,15 @@ const CatalogueItemDetail = () => {
     return <p>No item found</p>;
   }
 
+  const handleRent = () => {
+    if (user){
+      console.log('yay')
+    } else {
+      console.log("Please Log In First")
+    }
 
+
+  }
   return (
     <div className="page">
       <div className="wrapper">
@@ -84,7 +96,16 @@ const CatalogueItemDetail = () => {
           <p>Mechanics: {item.mechanics}</p>
           <p>Duration: {item.duration}</p>
           <p>Players: {item.players}</p>
+          <p> More info:
+            <a href={item.geeklink} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                style={{ marginLeft: '5px' }}> 
+                  {item.geeklink} 
+            </a> 
+          </p>
           <p>Available: {item.isAvailable ? 'Yes' : 'No'}</p>
+          <button onClick={handleRent}> Rent </button>
         </div>
       </div>
 

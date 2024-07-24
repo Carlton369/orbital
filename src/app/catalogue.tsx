@@ -35,9 +35,10 @@ function CataloguePage() {
         Mechanics: doc.data().mechanics || 'Unknown Mechanics',
         Duration: doc.data().duration || 'Unknown Duration',
         Players: doc.data().players || 'Unknown Players',
-        geeklink: doc.data().geek_url || 'Unknown URL',
+        geeklink: doc.data().geeklink || 'Unknown URL',
         isAvailable: doc.data().isAvailable,
         img_path : doc.data().img_path,
+  
       }));
       setCatalogue(catalogueList);
     };
@@ -47,16 +48,16 @@ function CataloguePage() {
 
   return (
     <div>
-      <h1>Catalogue</h1>
       <ul>
         {catalogue.map(item => (
-          <ul>
-          <ImageDisplay imagePath={`Game_pic/${item.img_path}`} /> 
-          <Link href={`/${item.id}`}>  
-          <li key={item.id}>{item.Name}</li>
-          </Link>
-          <br/>
-          </ul>
+          <li key={item.id}>
+            <Link href={`/${item.id}`}>
+
+                <ImageDisplay imagePath={`Game_pic/${item.img_path}`} />
+                <p>{item.Name}</p>
+                
+            </Link>
+          </li>
         ))}
       </ul>
     </div>
