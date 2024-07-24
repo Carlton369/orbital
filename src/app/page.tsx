@@ -7,7 +7,7 @@ export default function Page() {
   return (
     <div className = 'wrapper'>
       <Navbar />
- 
+      <Link href='/add_game'> test</Link>
       <CataloguePage />
     </div>
   )

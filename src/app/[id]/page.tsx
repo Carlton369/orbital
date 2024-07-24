@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { db, doc, getDoc } from '../../firebase';
 import { useParams } from 'next/navigation';
 import {Navbar} from '../navbar'
+import emailjs from '@emailjs/browser'
 
 interface CatalogueItem {
   id: string;
@@ -20,6 +21,8 @@ const CatalogueItemDetail = () => {
   const { id } = useParams();
   const [item, setItem] = useState<CatalogueItem | null>(null);
   const [loading, setLoading] = useState(true);
+    
+  const [user] = useState<any>(null);
 
   useEffect(() => {
     const fetchItem = async (itemId: string) => {
@@ -48,6 +51,7 @@ const CatalogueItemDetail = () => {
     return <p>No item found</p>;
   }
 
+
   return (
     <div>
       <Navbar/>
@@ -58,6 +62,7 @@ const CatalogueItemDetail = () => {
       <p>Duration: {item.duration}</p>
       <p>Players: {item.players}</p>
       <p>Available: {item.isAvailable ? 'Yes' : 'No'}</p>
+  
     </div>
   );
 };

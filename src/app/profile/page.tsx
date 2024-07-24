@@ -9,7 +9,6 @@ export default function LoginLayout({
 }: {
   children: React.ReactNode
 }) {
-
     useEffect(() => {
         // Set up an observer on the Auth object to listen for changes
         const unsubscribe = onAuthStateChanged(auth, (user) => {

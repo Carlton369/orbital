@@ -15,7 +15,7 @@ interface Game {
   isAvailable: boolean;
 }
 
-export default function Page() {
+export default function AddPage() {
   const [game, setGame] = useState<Omit<Game,'isAvailable'>>({
     name: '',
     genre: '',

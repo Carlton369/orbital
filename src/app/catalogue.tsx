@@ -1,7 +1,8 @@
 'use client'
 import { useEffect, useState } from 'react';
-import { db, collection, getDocs, orderBy,query } from '../firebase';
+import { db, collection, getDocs, orderBy,query, ref, storage, getDownloadURL } from '../firebase';
 import Link from 'next/link'
+import ImageDisplay from '../components/display_image'
 
 interface CatalogueItem {
   id: string;
@@ -14,11 +15,12 @@ interface CatalogueItem {
   Players: string;
   geeklink: string;
   isAvailable: boolean;
-
+  img_path: string;
 }
 
 function CataloguePage() {
   const [catalogue, setCatalogue] = useState<CatalogueItem[]>([]);
+
 
   useEffect(() => {
     const fetchCatalogue = async () => {
@@ -35,7 +37,7 @@ function CataloguePage() {
         Players: doc.data().players || 'Unknown Players',
         geeklink: doc.data().geek_url || 'Unknown URL',
         isAvailable: doc.data().isAvailable,
-
+        img_path : doc.data().img_path,
       }));
       setCatalogue(catalogueList);
     };
@@ -49,8 +51,10 @@ function CataloguePage() {
       <ul>
         {catalogue.map(item => (
           <ul>
+          <ImageDisplay imagePath={`Game_pic/${item.img_path}.png`} /> 
+          <Link href={`/${item.id}`}>  
           <li key={item.id}>{item.Name}</li>
-          <Link href={`/${item.id}`}> test </Link>
+          </Link>
           <br/>
           </ul>
         ))}
