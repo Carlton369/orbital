@@ -4,9 +4,10 @@ import { getImageURL } from './get_images'; // Adjust the path as needed
 
 type ImageDisplayProps = {
   imagePath: string;
+  style?: React.CSSProperties; // Optional style prop
 };
 
-const ImageDisplay: React.FC<ImageDisplayProps> = ({ imagePath }) => {
+const ImageDisplay: React.FC<ImageDisplayProps> = ({ imagePath, style }) => {
   const [imageURL, setImageURL] = useState<string | null>(null);
 
   useEffect(() => {
@@ -23,10 +24,10 @@ const ImageDisplay: React.FC<ImageDisplayProps> = ({ imagePath }) => {
   }, [imagePath]);
 
   if (!imageURL) {
-    return <p> Loading image...</p>;
+    return <p>Loading image...</p>;
   }
 
-  return <img src={imageURL} alt="Firebase Image" />;
+  return <img src={imageURL} alt="Firebase Image" style={style} />; // Apply the style here
 };
 
 export default ImageDisplay;

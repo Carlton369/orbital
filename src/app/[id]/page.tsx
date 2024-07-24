@@ -1,8 +1,9 @@
 'use client'
 import { useEffect, useState } from 'react';
-import { db, doc, getDoc } from '../../firebase';
+import { auth, db, doc, getDoc, onAuthStateChanged } from '../../firebase';
 import { useParams } from 'next/navigation';
 import {Navbar} from '../navbar'
+import ImageDisplay from '../../components/display_image';
 import emailjs from '@emailjs/browser'
 
 interface CatalogueItem {
@@ -15,6 +16,7 @@ interface CatalogueItem {
   players: string;
   geek_url: string;
   isAvailable: boolean;
+  img_path: string;
 }
 
 const CatalogueItemDetail = () => {
@@ -22,8 +24,6 @@ const CatalogueItemDetail = () => {
   const [item, setItem] = useState<CatalogueItem | null>(null);
   const [loading, setLoading] = useState(true);
     
-  const [user] = useState<any>(null);
-
   useEffect(() => {
     const fetchItem = async (itemId: string) => {
       const docRef = doc(db, 'catalogue', itemId);
@@ -43,6 +43,17 @@ const CatalogueItemDetail = () => {
 
   }, [id]);
 
+  useEffect(() => {
+    // Set up an observer on the Auth object to listen for changes
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+    });
+
+    // Clean up the subscription on unmount
+    return () => unsubscribe();
+  }, []);
+
+    const [user, setUser] = useState<any>(null);
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -53,18 +64,76 @@ const CatalogueItemDetail = () => {
 
 
   return (
-    <div>
-      <Navbar/>
-      <h1>{item.name}</h1>
-      <p>Genre: {item.genre}</p>
-      <p>Complexity: {item.complexity}</p>
-      <p>Mechanics: {item.mechanics}</p>
-      <p>Duration: {item.duration}</p>
-      <p>Players: {item.players}</p>
-      <p>Available: {item.isAvailable ? 'Yes' : 'No'}</p>
-  
+    <div className="page">
+      <div className="wrapper">
+        <Navbar />
+      </div>
+
+      <div className="content">
+        <div className="page_left">
+          <h1>{item.name}</h1>
+          <ImageDisplay
+            imagePath={`Game_pic/${item.img_path}`}
+            style={{ width: '800px', height: 'auto' }} // Apply specific styles here
+          />
+        </div>
+
+        <div className="page_right">
+          <p>Genre: {item.genre}</p>
+          <p>Complexity: {item.complexity}</p>
+          <p>Mechanics: {item.mechanics}</p>
+          <p>Duration: {item.duration}</p>
+          <p>Players: {item.players}</p>
+          <p>Available: {item.isAvailable ? 'Yes' : 'No'}</p>
+        </div>
+      </div>
+
+      <style jsx>{`
+        .page {
+          display: flex;
+          flex-direction: column;
+          min-height: 100vh;
+        }
+
+        .wrapper {
+          flex: 0 0 auto;
+        }
+
+        .content {
+          flex: 1;
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
+          align-items: flex-start;
+          padding: 20px;
+        }
+
+        .page_left {
+          flex: 0 0 auto;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .page_left h1 {
+          margin-bottom: 20px;
+        }
+
+        .page_right {
+          flex: 1;
+          margin-left: 20px;
+          padding-top: 40px;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .page_right p {
+          margin-bottom: 10px;
+        }
+      `}</style>
     </div>
   );
 };
+
 
 export default CatalogueItemDetail;

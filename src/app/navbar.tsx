@@ -3,7 +3,7 @@ import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import {useState,useEffect} from 'react'
-import { auth, provider, signInWithPopup, signOut, onAuthStateChanged, User } from '../firebase';
+import { auth, provider, signInWithPopup, onAuthStateChanged } from '../firebase';
 
 
 
