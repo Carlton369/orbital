@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { db, collection, getDocs, orderBy,query, ref, storage, getDownloadURL } from '../firebase';
 import Link from 'next/link'
 import ImageDisplay from '../components/display_image'
+import '../css/page.css'
 
 interface CatalogueItem {
   id: string;
@@ -21,7 +22,7 @@ interface CatalogueItem {
 function CataloguePage() {
   const [catalogue, setCatalogue] = useState<CatalogueItem[]>([]);
 
-
+  //fetches the whole catalogue
   useEffect(() => {
     const fetchCatalogue = async () => {
       const catalogueCollection = collection(db, 'catalogue');
@@ -47,19 +48,19 @@ function CataloguePage() {
   }, []);
 
   return (
-    <div>
-      <ul>
-        {catalogue.map(item => (
-          <li key={item.id}>
-            <Link href={`/${item.id}`}>
+    <div className="catalogue-grid">
+      {catalogue.map(item => (
+        <div key={item.id} className="catalogue-item">
+          <Link href={`/${item.id}`}>
 
+              <div className="image-container">
                 <ImageDisplay imagePath={`Game_pic/${item.img_path}`} />
-                <p>{item.Name}</p>
-                
-            </Link>
-          </li>
-        ))}
-      </ul>
+              </div>
+              <p>{item.Name}</p>
+              
+          </Link>
+        </div>
+      ))}
     </div>
   );
 }

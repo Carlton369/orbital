@@ -35,3 +35,31 @@
     text-decoration: none; /* Remove underline from links */
     margin: 0; /* Remove any default margin */
 }
+
+.catalogue-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columns */
+    gap: 20px; /* Space between items */
+    padding: 20px;
+    width: 100%; /* Ensure the container takes full width */
+  }
+  
+  .catalogue-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .image-container {
+    padding-top: 50px; /* Adjust the padding as needed */
+  }
+  
+  .catalogue-item img {
+    width: 100%; /* Make image responsive */
+    height: auto;
+  }
+  
+  .catalogue-item p {
+    margin-top: 10px; /* Space between image and text */
+    text-align: center;
+  }
