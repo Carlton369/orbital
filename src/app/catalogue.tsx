@@ -51,7 +51,7 @@ function CataloguePage() {
       <ul>
         {catalogue.map(item => (
           <ul>
-          <ImageDisplay imagePath={`Game_pic/${item.img_path}.png`} /> 
+          <ImageDisplay imagePath={`Game_pic/${item.img_path}`} /> 
           <Link href={`/${item.id}`}>  
           <li key={item.id}>{item.Name}</li>
           </Link>
