@@ -1,11 +1,10 @@
 'use client'
 import { useEffect, useState } from 'react';
-import { auth, db, doc, getDoc, onAuthStateChanged , setDoc, collection, Timestamp } from '../../firebase';
+import { auth, db, doc, getDoc, onAuthStateChanged, collection, setDoc, Timestamp , query, where, getDocs} from '../../firebase';
 import { useParams } from 'next/navigation';
-import {Navbar} from '../navbar'
+import { Navbar } from '../navbar';
 import ImageDisplay from '../../components/display_image';
-import emailjs from '@emailjs/browser'
-import '../../css/page.css'
+import '../../css/page.css';
 
 interface CatalogueItem {
   id: string;
@@ -20,24 +19,32 @@ interface CatalogueItem {
   img_path: string;
 }
 
-const store_loan_info = async (name: string, email:string, date: any, game: string) => {
+const store_loan_info = async (userId: string, loan_date: any, game: string) => {
   try {
-    //ref users collection
-    const usersCollectionRef = collection(db, 'users');
+    // Reference to the user's document
+    const userDocRef = doc(db, 'users', userId);
     
-   // add new doc to collection with user info
-    const newUserRef = doc(usersCollectionRef);
-    await setDoc(newUserRef, { name, email });
+    // Reference to the loaned_games subcollection of the user
+    const loanedCollectionRef = collection(userDocRef, 'loaned_games');
+    
+    // Query to check if the game is already in the user's loaned_games collection
+    const q = query(loanedCollectionRef, where('game', '==', game));
+    const querySnapshot = await getDocs(q);
+    
+    if (!querySnapshot.empty) {
+      // If a document with the same game name already exists, throw an error
+      alert('You have already submitted a loan request for this game');
+    }
 
-    // ref subcollection of borrowed items
-    const loanedCollectionRef = collection(newUserRef, 'loaned_items');
-    
-   // create new doc with the loaned game
+    else {
+    // Create a new document in the loaned_games subcollection
     const newLoanedDocRef = doc(loanedCollectionRef);
-    await setDoc(newLoanedDocRef, { date, game });
+    await setDoc(newLoanedDocRef, { loan_date, game });
+    alert('Thank you for submitting your loan request!');
+    }
 
   } catch (error) {
-    console.error('Error adding user and loaned game: ', error);
+    alert("error loaning game")
   }
 };
 
@@ -45,8 +52,9 @@ const CatalogueItemDetail = () => {
   const { id } = useParams();
   const [item, setItem] = useState<CatalogueItem | null>(null);
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<any>(null);
   
-  // to fetch item from db
+  // Fetch item from DB
   useEffect(() => {
     const fetchItem = async (itemId: string) => {
       const docRef = doc(db, 'catalogue', itemId);
@@ -63,10 +71,9 @@ const CatalogueItemDetail = () => {
     if (id) {
       fetchItem(id);
     }
-
   }, [id]);
 
-  // to fetch user state
+  // Fetch user state
   useEffect(() => {
     // Set up an observer on the Auth object to listen for changes
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -77,7 +84,6 @@ const CatalogueItemDetail = () => {
     return () => unsubscribe();
   }, []);
 
-    const [user, setUser] = useState<any>(null);
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -86,15 +92,19 @@ const CatalogueItemDetail = () => {
     return <p>No item found</p>;
   }
 
-  const handleRent = () => {
-    if (user){
-      const curr_time = Timestamp.now()
-      store_loan_info(user.displayName, user.email, curr_time,  item.name)
+  const handleRent = async () => {
+    if (user) {
+      const curr_time = Timestamp.now().toDate().toLocaleDateString();
+      try {
+        await store_loan_info(user.uid, curr_time, item.name);
+      } catch (error) {
+        alert('An error occurred while processing your request.');
+      }
     } else {
-      console.log("Please Log In First")
+      alert('Please login!');
     }
+  };
 
-  }
   return (
     <div className="page">
       <div className="wrapper">
@@ -116,16 +126,16 @@ const CatalogueItemDetail = () => {
           <p>Mechanics: {item.mechanics}</p>
           <p>Duration: {item.duration}</p>
           <p>Players: {item.players}</p>
-          <p> More info:
+          <p>More info:
             <a href={item.geeklink} 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                style={{ marginLeft: '5px' }}> 
-                  {item.geeklink} 
+               target="_blank" 
+               rel="noopener noreferrer" 
+               style={{ marginLeft: '5px' }}> 
+              {item.geeklink} 
             </a> 
           </p>
           <p>Available: {item.isAvailable ? 'Yes' : 'No'}</p>
-          <button onClick={handleRent}> Rent </button>
+          <button onClick={handleRent}>Rent</button>
         </div>
       </div>
 
@@ -175,6 +185,5 @@ const CatalogueItemDetail = () => {
     </div>
   );
 };
-
 
 export default CatalogueItemDetail;

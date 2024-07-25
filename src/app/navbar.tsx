@@ -1,19 +1,39 @@
 'use client'
-import React from 'react'
-import Link from 'next/link'
-import Image from 'next/image'
-import {useState,useEffect} from 'react'
-import { auth, provider, signInWithPopup, onAuthStateChanged } from '../firebase';
-
-
+import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { auth, provider, signInWithPopup, onAuthStateChanged, collection, db, doc, setDoc, query, where, getDocs } from '../firebase';
 
 export const Navbar = () => {
-  const [user, setUser] = useState< User | null>(null);
+  const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
     // Set up an observer on the Auth object to listen for changes
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      if (currentUser) {
+        setUser(currentUser);
+
+        // Reference to the users collection
+        const usersCollectionRef = collection(db, 'users');
+        
+        // Query to check if a user with the specified email already exists
+        const q = query(usersCollectionRef, where('email', '==', currentUser.email));
+        const querySnapshot = await getDocs(q);
+
+        if (querySnapshot.empty) {
+          // If user does not exist, create a new document
+          const userDocRef = doc(usersCollectionRef, currentUser.uid);
+          
+          // Create the user document
+          await setDoc(userDocRef, {
+            name: currentUser.displayName,
+            email: currentUser.email
+          });
+
+        }
+      } else {
+        setUser(null);
+      }
     });
 
     // Clean up the subscription on unmount
@@ -28,12 +48,10 @@ export const Navbar = () => {
     }
   };
 
- 
-
   return (
     <div className='navbar'>
       <div className='left'>
-        <Image 
+        <Image
           src='/images/nusbg.png'
           width={100}
           height={100}
@@ -46,17 +64,17 @@ export const Navbar = () => {
       <div className='right'>
         {user ? (
           <div>
-            <Link href = '/profile'>
-            <img
-              src={user.photoURL || '/default-profile.png'} // Fallback to a default image if photoURL is null
-              alt="Profile"
-              style={{ width: '50px', borderRadius: '50%' }}
-            />
+            <Link href={`/profile?userId=${user.uid}`}>
+              <img
+                src={user.photoURL || '/default-profile.png'} // Fallback to a default image if photoURL is null
+                alt="Profile"
+                style={{ width: '50px', borderRadius: '50%' }}
+              />
             </Link>
           </div>
         ) : (
           <div>
-            <button onClick={handleSignIn}>Log in</button>
+            <button onClick={handleSignIn}> Log in </button>
           </div>
         )}
       </div>
