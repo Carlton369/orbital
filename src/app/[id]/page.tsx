@@ -34,17 +34,14 @@ const store_loan_info = async (userId: string, loan_date: any, game: string) => 
     if (!querySnapshot.empty) {
       // If a document with the same game name already exists, throw an error
       alert('You have already submitted a loan request for this game');
+    } else {
+      // Create a new document in the loaned_games subcollection
+      const newLoanedDocRef = doc(loanedCollectionRef);
+      await setDoc(newLoanedDocRef, { loan_date, game });
+      alert('Thank you for submitting your loan request!');
     }
-
-    else {
-    // Create a new document in the loaned_games subcollection
-    const newLoanedDocRef = doc(loanedCollectionRef);
-    await setDoc(newLoanedDocRef, { loan_date, game });
-    alert('Thank you for submitting your loan request!');
-    }
-
   } catch (error) {
-    alert("error loaning game")
+    alert("error loaning game");
   }
 };
 
@@ -68,7 +65,7 @@ const CatalogueItemDetail = () => {
       setLoading(false);
     };
 
-    if (id) {
+    if (typeof id === 'string') {
       fetchItem(id);
     }
   }, [id]);
@@ -135,7 +132,7 @@ const CatalogueItemDetail = () => {
             </a> 
           </p>
           <p>Available: {item.isAvailable ? 'Yes' : 'No'}</p>
-          <button onClick={handleRent}>Rent</button>
+          <button onClick={handleRent} className="rent-button">Rent</button>
         </div>
       </div>
 
@@ -173,14 +170,25 @@ const CatalogueItemDetail = () => {
         .page_right {
           flex: 1;
           margin-left: 20px;
-          padding-top: 40px;
+          padding-top: 60px;
           display: flex;
           flex-direction: column;
         }
 
         .page_right p {
           margin-bottom: 10px;
+          font-size: 18px; 
         }
+
+        .page_right a {
+          font-size: 18px; 
+        }
+
+        .rent-button {
+          font-size: 14px; 
+          padding: 5px 10px; 
+          width: 50%; 
+          height: 50%; 
       `}</style>
     </div>
   );
