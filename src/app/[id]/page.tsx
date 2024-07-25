@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react';
-import { auth, db, doc, getDoc, onAuthStateChanged } from '../../firebase';
+import { auth, db, doc, getDoc, onAuthStateChanged , setDoc, collection, Timestamp } from '../../firebase';
 import { useParams } from 'next/navigation';
 import {Navbar} from '../navbar'
 import ImageDisplay from '../../components/display_image';
@@ -20,12 +20,32 @@ interface CatalogueItem {
   img_path: string;
 }
 
+const store_loan_info = async (name: string, email:string, date: any, game: string) => {
+  try {
+    //ref users collection
+    const usersCollectionRef = collection(db, 'users');
+    
+   // add new doc to collection with user info
+    const newUserRef = doc(usersCollectionRef);
+    await setDoc(newUserRef, { name, email });
+
+    // ref subcollection of borrowed items
+    const loanedCollectionRef = collection(newUserRef, 'loaned_items');
+    
+   // create new doc with the loaned game
+    const newLoanedDocRef = doc(loanedCollectionRef);
+    await setDoc(newLoanedDocRef, { date, game });
+
+  } catch (error) {
+    console.error('Error adding user and loaned game: ', error);
+  }
+};
+
 const CatalogueItemDetail = () => {
   const { id } = useParams();
   const [item, setItem] = useState<CatalogueItem | null>(null);
   const [loading, setLoading] = useState(true);
   
-
   // to fetch item from db
   useEffect(() => {
     const fetchItem = async (itemId: string) => {
@@ -68,11 +88,11 @@ const CatalogueItemDetail = () => {
 
   const handleRent = () => {
     if (user){
-      console.log('yay')
+      const curr_time = Timestamp.now()
+      store_loan_info(user.displayName, user.email, curr_time,  item.name)
     } else {
       console.log("Please Log In First")
     }
-
 
   }
   return (
