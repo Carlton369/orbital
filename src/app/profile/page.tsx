@@ -2,15 +2,10 @@
 import { useState, useEffect } from 'react';
 import { auth, signOut, onAuthStateChanged, collection, db, doc, getDoc , getDocs} from '../../firebase';
 import { Navbar } from '../navbar'; // Adjust the import path as necessary
-import Link from 'next/link';
 import { Timestamp } from 'firebase/firestore';
 import '../../css/page.css';
 
-export default function LoginLayout({
-  children, // will be a page or nested layout
-}: {
-  children: React.ReactNode;
-}) {
+const Profile = () => {
   const [user, setUser] = useState<any>(null);
   const [loanedItems, setLoanedItems] = useState<any[]>([]);
 
@@ -106,7 +101,8 @@ export default function LoginLayout({
           <h1>Please Sign In</h1>
         </div>
       )}
-      {children}
     </div>
   );
-}
+ }
+
+ export default Profile;
