@@ -21,21 +21,19 @@ interface CatalogueItem {
 
 const store_loan_info = async (userId: string, loan_date: any, game: string) => {
   try {
-    // Reference to the user's document
+    // checks user info
     const userDocRef = doc(db, 'users', userId);
     
-    // Reference to the loaned_games subcollection of the user
+    // checks if user loaned games
     const loanedCollectionRef = collection(userDocRef, 'loaned_games');
     
-    // Query to check if the game is already in the user's loaned_games collection
+    // checks if loan rq alr sent
     const q = query(loanedCollectionRef, where('game', '==', game));
     const querySnapshot = await getDocs(q);
     
-    if (!querySnapshot.empty) {
-      // If a document with the same game name already exists, throw an error
+    if (!querySnapshot.empty) { //means loan rq alr sent
       alert('You have already submitted a loan request for this game');
-    } else {
-      // Create a new document in the loaned_games subcollection
+    } else { //send the loan rq
       const newLoanedDocRef = doc(loanedCollectionRef);
       await setDoc(newLoanedDocRef, { loan_date, game });
       alert('Thank you for submitting your loan request!');
@@ -70,9 +68,9 @@ const CatalogueItemDetail = () => {
     }
   }, [id]);
 
-  // Fetch user state
+  // see sif user logged in
   useEffect(() => {
-    // Set up an observer on the Auth object to listen for changes
+    // checks user if auth
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
     });

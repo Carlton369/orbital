@@ -54,26 +54,26 @@ function CataloguePage() {
   );
 
   //group by selectbox option
-  const groupedCatalogue = filteredCatalogue.reduce((acc, item) => {
+  const groupedCatalogue = filteredCatalogue.reduce((temp, item) => {
     const key = item[sort_by as keyof CatalogueItem] || 'Unknown';
 
     //slice the string for genre and mechanics for games with multiple of them
     if (sort_by === 'Genre' || sort_by === 'Mechanics') {
       const categories = key.split(/[,\/]/).map((category:string) => category.trim());
       categories.forEach((category:string) => {
-        if (!acc[category]) {
-          acc[category] = [];
+        if (!temp[category]) {
+          temp[category] = [];
         }
-        acc[category].push(item);
+        temp[category].push(item);
       });
     } else {
-      if (!acc[key]) {
-        acc[key] = [];
+      if (!temp[key]) {
+        temp[key] = [];
       }
-      acc[key].push(item);
-    }
+      temp[key].push(item);
+    }    
 
-    return acc;
+    return temp;
   }, {} as Record<string, CatalogueItem[]>);
 
   return (
@@ -106,7 +106,6 @@ function CataloguePage() {
         {Object.keys(groupedCatalogue).map(group => (
           <div key={group} className="genre-group">
             <h2>{group}</h2> 
-
             <div className="games-grid">
 
               {groupedCatalogue[group].map(item => (
@@ -119,9 +118,9 @@ function CataloguePage() {
                     </div>
 
                     <p>{item.Name}</p>
-
+                    
                   </Link>
-
+      
                 </div>
               ))}
               

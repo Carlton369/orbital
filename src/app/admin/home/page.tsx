@@ -14,7 +14,7 @@ interface User {
 
 interface LoanedGame {
   game: string;
-  loan_date: Timestamp | string; // Adjust this according to your actual data
+  loan_date: string; // Adjust this according to your actual data
 }
 
 const Page = () => {
