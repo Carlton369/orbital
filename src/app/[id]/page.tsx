@@ -18,8 +18,7 @@ interface CatalogueItem {
   isAvailable: boolean;
   img_path: string;
 }
-
-const store_loan_info = async (userId: string, loan_date: any, game: string) => {
+const store_loan_info = async (userId: string, loan_date: any, game: string, gameId: string, isAvailable: boolean) => {
   try {
     // checks user info
     const userDocRef = doc(db, 'users', userId);
@@ -34,12 +33,12 @@ const store_loan_info = async (userId: string, loan_date: any, game: string) => 
     if (!querySnapshot.empty) { //means loan rq alr sent
       alert('You have already submitted a loan request for this game');
     } else { //send the loan rq
-      const newLoanedDocRef = doc(loanedCollectionRef);
-      await setDoc(newLoanedDocRef, { loan_date, game });
+      const newLoanedDocRef = doc(loanedCollectionRef, gameId);
+      await setDoc(newLoanedDocRef, { loan_date, game, isAvailable });
       alert('Thank you for submitting your loan request!');
     }
   } catch (error) {
-    alert("error loaning game");
+    alert("Error loaning game");
   }
 };
 
@@ -68,7 +67,7 @@ const CatalogueItemDetail = () => {
     }
   }, [id]);
 
-  // see sif user logged in
+  // see if user logged in
   useEffect(() => {
     // checks user if auth
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -91,7 +90,7 @@ const CatalogueItemDetail = () => {
     if (user) {
       const curr_time = Timestamp.now().toDate().toLocaleDateString();
       try {
-        await store_loan_info(user.uid, curr_time, item.name);
+        await store_loan_info(user.uid, curr_time, item.name, item.id, item.isAvailable);
       } catch (error) {
         alert('An error occurred while processing your request.');
       }
