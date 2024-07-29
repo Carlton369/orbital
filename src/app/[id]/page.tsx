@@ -87,7 +87,7 @@ const CatalogueItemDetail = () => {
   }
 
   const handleRent = async () => {
-    if (user) {
+    if (user && item.isAvailable) {
       const curr_time = Timestamp.now().toDate().toLocaleDateString();
       try {
         await store_loan_info(user.uid, curr_time, item.name, item.id, item.isAvailable);
