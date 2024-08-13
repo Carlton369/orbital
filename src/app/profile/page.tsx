@@ -10,31 +10,30 @@ const Profile = () => {
   const [loanedItems, setLoanedItems] = useState<any[]>([]);
 
   useEffect(() => {
-    // Set up an observer on the Auth object to listen for changes
+    // checks if user is auth'ed
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setUser(user);
       if (user) {
-        // Fetch the user's document to get their name
+        // fetch user document
         await fetchUserDetails(user.uid);
       }
     });
 
-    // Clean up the subscription on unmount
     return () => unsubscribe();
   }, []);
 
   const fetchUserDetails = async (userId: string) => {
     try {
-      // Reference to the user's document
-      const userDocRef = doc(db, 'users', userId);
-      const userDocSnap = await getDoc(userDocRef);
+      //ref to user doc
+      const user_doc = doc(db, 'users', userId);
+      const user_doc_snap = await getDoc(user_doc);
 
-      if (userDocSnap.exists()) {
-        const userData = userDocSnap.data();
-        const userName = userData.name;
+      if (user_doc_snap.exists()) {
+        const user_data = user_doc_snap.data();
+        const username = user_data.name;
 
         // Fetch loaned items
-        await fetchLoanedItems(userId, userName);
+        await fetchLoanedItems(userId, username);
       } else {
         console.log('No such user document!');
       }
@@ -45,10 +44,10 @@ const Profile = () => {
 
   const fetchLoanedItems = async (userId: string, userName: string) => {
     try {
-      // Reference to the loaned_games subcollection of the user
-      const loanedCollectionRef = collection(doc(db, 'users', userId), 'loaned_games');
-      const loanedSnapshot = await getDocs(loanedCollectionRef);
-      const loanedList = loanedSnapshot.docs.map(doc => {
+      // check if user got loan
+      const loan_collec = collection(doc(db, 'users', userId), 'loaned_games');
+      const loaned_snap = await getDocs(loan_collec);
+      const loaned_list = loaned_snap.docs.map(doc => {
         const data = doc.data();
         const date = data.loan_date instanceof Timestamp ? data.loan_date.toDate().toLocaleDateString() : data.loan_date;
         return {
@@ -56,7 +55,7 @@ const Profile = () => {
           date,
         };
       });
-      setLoanedItems(loanedList);
+      setLoanedItems(loaned_list);
     } catch (error) {
       console.error("Error fetching loaned items:", error);
     }

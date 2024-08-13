@@ -45,7 +45,7 @@ export default function AddPage() {
     try {
       let imgPath = '';
 
-      // If an image file is selected, upload it to Firebase Storage
+      // check img upload, then throw to firebase storage
       if (imageFile) {
         const storageRef = ref(storage, `Game_pic/${Date.now()}_${imageFile.name}`);
         await uploadBytes(storageRef, imageFile);
@@ -56,11 +56,11 @@ export default function AddPage() {
       await addDoc(collection(db, 'catalogue'), {
         ...game,
         isAvailable: true,
-        img_path: imgPath, // Store only the filename part
+        img_path: imgPath, // store only the filename part
       });
 
       alert('Game added successfully!');
-      // Clear the form
+      // clear form
       setGame({
         name: '',
         genre: '',

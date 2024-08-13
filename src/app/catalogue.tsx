@@ -21,17 +21,17 @@ interface CatalogueItem {
 
 function CataloguePage() {
   const [catalogue, setCatalogue] = useState<CatalogueItem[]>([]);
-  const [sort_by, setSortBy] = useState<string>('Genre'); // State for sorting field
-  const [searchQuery, setSearchQuery] = useState<string>(''); // State for search query
+  const [sort_by, setSortBy] = useState<string>('Genre'); // state to check how to sort
+  const [searchbar, setSearchbar] = useState<string>(''); // state for searchbar
   const key_arr = ['Genre', 'Complexity', 'Mechanics', 'Players'];
 
   // fetches catalogue
   useEffect(() => {
     const fetchCatalogue = async () => {
-      const catalogueCollection = collection(db, 'catalogue');
-      const q = query(catalogueCollection, orderBy(sort_by.toLowerCase())); // Use sort_by state here
-      const catalogueSnapshot = await getDocs(q);
-      const catalogueList = catalogueSnapshot.docs.map(doc => ({
+      const cat_collec = collection(db, 'catalogue');
+      const q = query(cat_collec, orderBy(sort_by.toLowerCase())); // Use sort_by state here
+      const cat_snap = await getDocs(q);
+      const cat_list = cat_snap.docs.map(doc => ({
         id: doc.id,
         Genre: doc.data().genre || 'Unknown Genre',
         Name: doc.data().name || 'Unknown Name',
@@ -43,18 +43,18 @@ function CataloguePage() {
         isAvailable: doc.data().isAvailable,
         img_path: doc.data().img_path,
       }));
-      setCatalogue(catalogueList);
+      setCatalogue(cat_list);
     };
     fetchCatalogue();
   }, [sort_by]);
 
   // filters by name based on searchbox
-  const filteredCatalogue = catalogue.filter(item =>
-    item.Name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filtered_cat = catalogue.filter(item =>
+    item.Name.toLowerCase().includes(searchbar.toLowerCase())
   );
 
   //group by selectbox option
-  const groupedCatalogue = filteredCatalogue.reduce((temp, item) => {
+  const grouped_cat = filtered_cat.reduce((temp, item) => {
     const key = item[sort_by as keyof CatalogueItem] || 'Unknown';
 
     //slice the string for genre and mechanics for games with multiple of them
@@ -95,20 +95,20 @@ function CataloguePage() {
           <input
             type="text"
             placeholder="Search..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            value={searchbar}
+            onChange={(e) => setSearchbar(e.target.value)}
           />
         </div>
 
       </div>
 
       <div className="catalogue-grid">
-        {Object.keys(groupedCatalogue).map(group => (
+        {Object.keys(grouped_cat).map(group => (
           <div key={group} className="genre-group">
             <h2>{group}</h2> 
             <div className="games-grid">
 
-              {groupedCatalogue[group].map(item => (
+              {grouped_cat[group].map(item => (
                 <div key={item.id} className="catalogue-item">
 
                   <Link href={`/${item.id}`}>

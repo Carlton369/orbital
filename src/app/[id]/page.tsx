@@ -21,20 +21,20 @@ interface CatalogueItem {
 const store_loan_info = async (userId: string, loan_date: any, game: string, gameId: string, isAvailable: boolean) => {
   try {
     // checks user info
-    const userDocRef = doc(db, 'users', userId);
+    const user_doc = doc(db, 'users', userId);
     
     // checks if user loaned games
-    const loanedCollectionRef = collection(userDocRef, 'loaned_games');
+    const loan_collec = collection(user_doc, 'loaned_games');
     
     // checks if loan rq alr sent
-    const q = query(loanedCollectionRef, where('game', '==', game));
+    const q = query(loan_collec, where('game', '==', game));
     const querySnapshot = await getDocs(q);
     
     if (!querySnapshot.empty) { //means loan rq alr sent
       alert('You have already submitted a loan request for this game');
     } else { //send the loan rq
-      const newLoanedDocRef = doc(loanedCollectionRef, gameId);
-      await setDoc(newLoanedDocRef, { loan_date, game, isAvailable });
+      const new_loaned_doc = doc(loan_collec, gameId);
+      await setDoc(new_loaned_doc, { loan_date, game, isAvailable });
       alert('Thank you for submitting your loan request!');
     }
   } catch (error) {
@@ -77,10 +77,6 @@ const CatalogueItemDetail = () => {
     // Clean up the subscription on unmount
     return () => unsubscribe();
   }, []);
-
-  if (loading) {
-    return <p>Loading...</p>;
-  }
 
   if (!item) {
     return <p>No item found</p>;

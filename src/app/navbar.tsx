@@ -8,26 +8,26 @@ export const Navbar = () => {
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
-    // Set up an observer on the Auth object to listen for changes
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      if (currentUser) {
-        setUser(currentUser);
+    // check user auth state
+    const unsubscribe = onAuthStateChanged(auth, async (curr_user) => {
+      if (curr_user) {
+        setUser(curr_user);
 
-        // Reference to the users collection
-        const usersCollectionRef = collection(db, 'users');
+        // refs users collec
+        const users_collec = collection(db, 'users');
         
-        // Query to check if a user with the specified email already exists
-        const q = query(usersCollectionRef, where('email', '==', currentUser.email));
-        const querySnapshot = await getDocs(q);
+        // check if user log in before
+        const q = query(users_collec, where('email', '==', curr_user.email));
+        const q_snap = await getDocs(q);
 
-        if (querySnapshot.empty) {
+        if (q_snap.empty) {
           // If user does not exist, create a new document
-          const userDocRef = doc(usersCollectionRef, currentUser.uid);
+          const user_doc = doc(users_collec, curr_user.uid);
           
           // Create the user document
-          await setDoc(userDocRef, {
-            name: currentUser.displayName,
-            email: currentUser.email
+          await setDoc(user_doc, {
+            name: curr_user.displayName,
+            email: curr_user.email
           });
 
         }
@@ -66,7 +66,7 @@ export const Navbar = () => {
           <div>
             <Link href={`/profile?userId=${user.uid}`}>
               <img
-                src={user.photoURL || '/default-profile.png'} // Fallback to a default image if photoURL is null
+                src={user.photoURL || '/default-profile.png'} //default img if no user photo found
                 alt="Profile"
                 style={{ width: '50px', borderRadius: '50%' }}
               />
